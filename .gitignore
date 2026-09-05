@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# The raw crawl database is NOT needed for deployment (query/snippet.py now
+# reads pre-extracted text from index.db instead of re-parsing raw HTML at
+# request time -- see index/inverted_index.py's snippet_text column). It's
+# also ~1GB for a full crawl, far too large to want in git history anyway.
+# Keep it locally for re-indexing, but never commit it.
+data/crawled_pages.db
+
+# index.db (the actual inverted index) IS committed -- this app is
+# read-only at serve time, so the deployed instance needs this file to have
+# anything to search. If it's still over ~100MB after rebuilding with the
+# snippet_text change, use Git LFS for this one file (see deploy notes).
+data/index.db 
+ 

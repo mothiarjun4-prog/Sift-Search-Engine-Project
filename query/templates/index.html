@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{% if query %}{{ query }} — {% endif %}Sift</title>
+<style>
+    :root {
+        --ink: #1a1a2e;
+        --muted: #6b7280;
+        --accent: #4f46e5;
+        --bg: #fafafa;
+        --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        margin: 0;
+        padding: 2.5rem 1.5rem 4rem;
+    }
+    .container { max-width: 680px; margin: 0 auto; }
+    .brand {
+        text-align: center;
+        margin-bottom: 1.75rem;
+    }
+    .pixel-logo {
+        width: 200px;
+        height: auto;
+        display: inline-block;
+    }
+    form { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+    input[type="text"] {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        outline: none;
+    }
+    input[type="text"]:focus { border-color: var(--accent); }
+    button {
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    button:hover { opacity: 0.9; }
+    .method-toggle {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-bottom: 1.5rem;
+    }
+    .method-toggle label { display: flex; align-items: center; gap: 0.3rem; cursor: pointer; }
+    .meta-line {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-bottom: 1.25rem;
+    }
+    .notice {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #9a3412;
+        padding: 0.6rem 0.9rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        margin-bottom: 1.25rem;
+    }
+    .result { margin-bottom: 1.6rem; }
+    .result a.title {
+        font-size: 1.05rem;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .result a.title:hover { text-decoration: underline; }
+    .result .url { color: #15803d; font-size: 0.8rem; margin: 0.15rem 0 0.3rem; word-break: break-all; }
+    .result .snippet { font-size: 0.92rem; color: #374151; line-height: 1.5; }
+    .result .score { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+    .empty { color: var(--muted); text-align: center; margin-top: 2rem; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="brand">
+        <svg viewBox="0 0 31 9" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" class="pixel-logo">
+  <rect x="0" y="0" width="1" height="1" fill="#0091B9"/>
+  <rect x="1" y="0" width="1" height="1" fill="#0091B9"/>
+  <rect x="2" y="0" width="1" height="1" fill="#0091B9"/>
+  <rect x="3" y="0" width="1" height="1" fill="#0091B9"/>
+  <rect x="4" y="0" width="1" height="1" fill="#0091B9"/>
+  <rect x="5" y="0" width="1" height="1" fill="#0091B9"/>
+  <rect x="6" y="0" width="1" height="1" fill="#0091B9"/>
+  <rect x="0" y="1" width="1" height="1" fill="#0091B9"/>
+  <rect x="1" y="1" width="1" height="1" fill="#0091B9"/>
+  <rect x="2" y="1" width="1" height="1" fill="#0091B9"/>
+  <rect x="3" y="1" width="1" height="1" fill="#0091B9"/>
+  <rect x="4" y="1" width="1" height="1" fill="#0091B9"/>
+  <rect x="5" y="1" width="1" height="1" fill="#0091B9"/>
+  <rect x="6" y="1" width="1" height="1" fill="#0091B9"/>
+  <rect x="0" y="2" width="1" height="1" fill="#0091B9"/>
+  <rect x="1" y="2" width="1" height="1" fill="#0091B9"/>
+  <rect x="0" y="3" width="1" height="1" fill="#0091B9"/>
+  <rect x="1" y="3" width="1" height="1" fill="#0091B9"/>
+  <rect x="0" y="4" width="1" height="1" fill="#0091B9"/>
+  <rect x="1" y="4" width="1" height="1" fill="#0091B9"/>
+  <rect x="2" y="4" width="1" height="1" fill="#0091B9"/>
+  <rect x="3" y="4" width="1" height="1" fill="#0091B9"/>
+  <rect x="4" y="4" width="1" height="1" fill="#0091B9"/>
+  <rect x="5" y="4" width="1" height="1" fill="#0091B9"/>
+  <rect x="6" y="4" width="1" height="1" fill="#0091B9"/>
+  <rect x="0" y="5" width="1" height="1" fill="#0091B9"/>
+  <rect x="1" y="5" width="1" height="1" fill="#0091B9"/>
+  <rect x="2" y="5" width="1" height="1" fill="#0091B9"/>
+  <rect x="3" y="5" width="1" height="1" fill="#0091B9"/>
+  <rect x="4" y="5" width="1" height="1" fill="#0091B9"/>
+  <rect x="5" y="5" width="1" height="1" fill="#0091B9"/>
+  <rect x="6" y="5" width="1" height="1" fill="#0091B9"/>
+  <rect x="5" y="6" width="1" height="1" fill="#0091B9"/>
+  <rect x="6" y="6" width="1" height="1" fill="#0091B9"/>
+  <rect x="5" y="7" width="1" height="1" fill="#0091B9"/>
+  <rect x="6" y="7" width="1" height="1" fill="#0091B9"/>
+  <rect x="0" y="8" width="1" height="1" fill="#0091B9"/>
+  <rect x="1" y="8" width="1" height="1" fill="#0091B9"/>
+  <rect x="2" y="8" width="1" height="1" fill="#0091B9"/>
+  <rect x="3" y="8" width="1" height="1" fill="#0091B9"/>
+  <rect x="4" y="8" width="1" height="1" fill="#0091B9"/>
+  <rect x="5" y="8" width="1" height="1" fill="#0091B9"/>
+  <rect x="6" y="8" width="1" height="1" fill="#0091B9"/>
+  <rect x="8" y="0" width="1" height="1" fill="#004E9B"/>
+  <rect x="9" y="0" width="1" height="1" fill="#004E9B"/>
+  <rect x="10" y="0" width="1" height="1" fill="#004E9B"/>
+  <rect x="11" y="0" width="1" height="1" fill="#004E9B"/>
+  <rect x="12" y="0" width="1" height="1" fill="#004E9B"/>
+  <rect x="13" y="0" width="1" height="1" fill="#004E9B"/>
+  <rect x="14" y="0" width="1" height="1" fill="#004E9B"/>
+  <rect x="10" y="1" width="1" height="1" fill="#004E9B"/>
+  <rect x="11" y="1" width="1" height="1" fill="#004E9B"/>
+  <rect x="12" y="1" width="1" height="1" fill="#004E9B"/>
+  <rect x="10" y="2" width="1" height="1" fill="#004E9B"/>
+  <rect x="11" y="2" width="1" height="1" fill="#004E9B"/>
+  <rect x="12" y="2" width="1" height="1" fill="#004E9B"/>
+  <rect x="10" y="3" width="1" height="1" fill="#004E9B"/>
+  <rect x="11" y="3" width="1" height="1" fill="#004E9B"/>
+  <rect x="12" y="3" width="1" height="1" fill="#004E9B"/>
+  <rect x="10" y="4" width="1" height="1" fill="#004E9B"/>
+  <rect x="11" y="4" width="1" height="1" fill="#004E9B"/>
+  <rect x="12" y="4" width="1" height="1" fill="#004E9B"/>
+  <rect x="10" y="5" width="1" height="1" fill="#004E9B"/>
+  <rect x="11" y="5" width="1" height="1" fill="#004E9B"/>
+  <rect x="12" y="5" width="1" height="1" fill="#004E9B"/>
+  <rect x="10" y="6" width="1" height="1" fill="#004E9B"/>
+  <rect x="11" y="6" width="1" height="1" fill="#004E9B"/>
+  <rect x="12" y="6" width="1" height="1" fill="#004E9B"/>
+  <rect x="10" y="7" width="1" height="1" fill="#004E9B"/>
+  <rect x="11" y="7" width="1" height="1" fill="#004E9B"/>
+  <rect x="12" y="7" width="1" height="1" fill="#004E9B"/>
+  <rect x="8" y="8" width="1" height="1" fill="#004E9B"/>
+  <rect x="9" y="8" width="1" height="1" fill="#004E9B"/>
+  <rect x="10" y="8" width="1" height="1" fill="#004E9B"/>
+  <rect x="11" y="8" width="1" height="1" fill="#004E9B"/>
+  <rect x="12" y="8" width="1" height="1" fill="#004E9B"/>
+  <rect x="13" y="8" width="1" height="1" fill="#004E9B"/>
+  <rect x="14" y="8" width="1" height="1" fill="#004E9B"/>
+  <rect x="16" y="0" width="1" height="1" fill="#FF6500"/>
+  <rect x="17" y="0" width="1" height="1" fill="#FF6500"/>
+  <rect x="18" y="0" width="1" height="1" fill="#FF6500"/>
+  <rect x="19" y="0" width="1" height="1" fill="#FF6500"/>
+  <rect x="20" y="0" width="1" height="1" fill="#FF6500"/>
+  <rect x="21" y="0" width="1" height="1" fill="#FF6500"/>
+  <rect x="22" y="0" width="1" height="1" fill="#FF6500"/>
+  <rect x="16" y="1" width="1" height="1" fill="#FF6500"/>
+  <rect x="17" y="1" width="1" height="1" fill="#FF6500"/>
+  <rect x="18" y="1" width="1" height="1" fill="#FF6500"/>
+  <rect x="19" y="1" width="1" height="1" fill="#FF6500"/>
+  <rect x="20" y="1" width="1" height="1" fill="#FF6500"/>
+  <rect x="21" y="1" width="1" height="1" fill="#FF6500"/>
+  <rect x="22" y="1" width="1" height="1" fill="#FF6500"/>
+  <rect x="16" y="2" width="1" height="1" fill="#FF6500"/>
+  <rect x="17" y="2" width="1" height="1" fill="#FF6500"/>
+  <rect x="16" y="3" width="1" height="1" fill="#FF6500"/>
+  <rect x="17" y="3" width="1" height="1" fill="#FF6500"/>
+  <rect x="16" y="4" width="1" height="1" fill="#FF6500"/>
+  <rect x="17" y="4" width="1" height="1" fill="#FF6500"/>
+  <rect x="18" y="4" width="1" height="1" fill="#FF6500"/>
+  <rect x="19" y="4" width="1" height="1" fill="#FF6500"/>
+  <rect x="20" y="4" width="1" height="1" fill="#FF6500"/>
+  <rect x="21" y="4" width="1" height="1" fill="#FF6500"/>
+  <rect x="16" y="5" width="1" height="1" fill="#FF6500"/>
+  <rect x="17" y="5" width="1" height="1" fill="#FF6500"/>
+  <rect x="18" y="5" width="1" height="1" fill="#FF6500"/>
+  <rect x="19" y="5" width="1" height="1" fill="#FF6500"/>
+  <rect x="20" y="5" width="1" height="1" fill="#FF6500"/>
+  <rect x="21" y="5" width="1" height="1" fill="#FF6500"/>
+  <rect x="16" y="6" width="1" height="1" fill="#FF6500"/>
+  <rect x="17" y="6" width="1" height="1" fill="#FF6500"/>
+  <rect x="16" y="7" width="1" height="1" fill="#FF6500"/>
+  <rect x="17" y="7" width="1" height="1" fill="#FF6500"/>
+  <rect x="16" y="8" width="1" height="1" fill="#FF6500"/>
+  <rect x="17" y="8" width="1" height="1" fill="#FF6500"/>
+  <rect x="24" y="0" width="1" height="1" fill="#FFD500"/>
+  <rect x="25" y="0" width="1" height="1" fill="#FFD500"/>
+  <rect x="26" y="0" width="1" height="1" fill="#FFD500"/>
+  <rect x="27" y="0" width="1" height="1" fill="#FFD500"/>
+  <rect x="28" y="0" width="1" height="1" fill="#FFD500"/>
+  <rect x="29" y="0" width="1" height="1" fill="#FFD500"/>
+  <rect x="30" y="0" width="1" height="1" fill="#FFD500"/>
+  <rect x="24" y="1" width="1" height="1" fill="#FFD500"/>
+  <rect x="25" y="1" width="1" height="1" fill="#FFD500"/>
+  <rect x="26" y="1" width="1" height="1" fill="#FFD500"/>
+  <rect x="27" y="1" width="1" height="1" fill="#FFD500"/>
+  <rect x="28" y="1" width="1" height="1" fill="#FFD500"/>
+  <rect x="29" y="1" width="1" height="1" fill="#FFD500"/>
+  <rect x="30" y="1" width="1" height="1" fill="#FFD500"/>
+  <rect x="26" y="2" width="1" height="1" fill="#FFD500"/>
+  <rect x="27" y="2" width="1" height="1" fill="#FFD500"/>
+  <rect x="28" y="2" width="1" height="1" fill="#FFD500"/>
+  <rect x="26" y="3" width="1" height="1" fill="#FFD500"/>
+  <rect x="27" y="3" width="1" height="1" fill="#FFD500"/>
+  <rect x="28" y="3" width="1" height="1" fill="#FFD500"/>
+  <rect x="26" y="4" width="1" height="1" fill="#FFD500"/>
+  <rect x="27" y="4" width="1" height="1" fill="#FFD500"/>
+  <rect x="28" y="4" width="1" height="1" fill="#FFD500"/>
+  <rect x="26" y="5" width="1" height="1" fill="#FFD500"/>
+  <rect x="27" y="5" width="1" height="1" fill="#FFD500"/>
+  <rect x="28" y="5" width="1" height="1" fill="#FFD500"/>
+  <rect x="26" y="6" width="1" height="1" fill="#FFD500"/>
+  <rect x="27" y="6" width="1" height="1" fill="#FFD500"/>
+  <rect x="28" y="6" width="1" height="1" fill="#FFD500"/>
+  <rect x="26" y="7" width="1" height="1" fill="#FFD500"/>
+  <rect x="27" y="7" width="1" height="1" fill="#FFD500"/>
+  <rect x="28" y="7" width="1" height="1" fill="#FFD500"/>
+  <rect x="26" y="8" width="1" height="1" fill="#FFD500"/>
+  <rect x="27" y="8" width="1" height="1" fill="#FFD500"/>
+  <rect x="28" y="8" width="1" height="1" fill="#FFD500"/>
+</svg>
+    </div>
+
+    <form action="/" method="get">
+        <input type="text" name="q" value="{{ query }}" placeholder='Try: web crawler, or "exact phrase"' autofocus>
+        <button type="submit">Search</button>
+    </form>
+
+    <div class="method-toggle">
+        <label><input type="radio" name="method" value="bm25" form="none" {% if method == 'bm25' %}checked{% endif %} onchange="setMethod('bm25')"> BM25</label>
+        <label><input type="radio" name="method" value="tfidf" form="none" {% if method == 'tfidf' %}checked{% endif %} onchange="setMethod('tfidf')"> TF-IDF</label>
+    </div>
+
+    {% if query %}
+        {% if corrections %}
+            <div class="notice">
+                Showing results for corrected spelling:
+                {% for original, fixed in corrections.items() %}
+                    <strong>{{ original }}</strong> → <strong>{{ fixed }}</strong>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if phrase_fallback %}
+            <div class="notice">
+                No exact match for that phrase — showing closest results by relevance instead.
+            </div>
+        {% endif %}
+
+        {% if results %}
+            <div class="meta-line">{{ results|length }} result(s) in {{ elapsed_ms }} ms</div>
+            {% for r in results %}
+                <div class="result">
+                    <a class="title" href="{{ r.url }}" target="_blank" rel="noopener">{{ r.title }}</a>
+                    <div class="url">{{ r.url }}</div>
+                    <div class="snippet">{{ r.snippet }}</div>
+                    <div class="score">score: {{ "%.4f"|format(r.score) }}</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">No results for "{{ query }}".</div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<script>
+    function setMethod(method) {
+        const params = new URLSearchParams(window.location.search);
+        params.set('method', method);
+        window.location.search = params.toString();
+    }
+</script>
+</body>
+</html>
