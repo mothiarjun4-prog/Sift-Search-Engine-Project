@@ -15,5 +15,3 @@ data/crawled_pages.db
 # read-only at serve time, so the deployed instance needs this file to have
 # anything to search. If it's still over ~100MB after rebuilding with the
 # snippet_text change, use Git LFS for this one file (see deploy notes).
-data/index.db 
- 
